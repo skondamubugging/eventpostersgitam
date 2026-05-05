@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT CoE Hands-on Workshop Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f4e6c9;
+    --teal: #006b65;
+    --teal-light: #008a83;
+    --dark: #1a1a1a;
+    --gold: #c8972a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #d9cfc0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px 20px;
+    font-family: 'Source Sans 3', sans-serif;
+  }
+
+  /* ─── Toolbar ─── */
+  .toolbar {
+    width: 860px;
+    max-width: 100%;
+    background: var(--teal);
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar label {
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .5px;
+  }
+
+  .toolbar input[type="color"] {
+    width: 32px; height: 28px;
+    border: 2px solid rgba(255,255,255,.35);
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+    padding: 1px;
+  }
+
+  .toolbar .sep {
+    width: 1px; height: 24px;
+    background: rgba(255,255,255,.3);
+    margin: 0 4px;
+  }
+
+  .tip {
+    color: rgba(255,255,255,.75);
+    font-size: 11px;
+    margin-left: auto;
+    font-style: italic;
+  }
+
+  /* ─── Poster ─── */
+  .poster {
+    width: 860px;
+    max-width: 100%;
+    background: var(--cream);
+    box-shadow: 0 12px 60px rgba(0,0,0,.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* decorative corner accent */
+  .poster::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle at top right, rgba(0,107,101,.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ─── Header bar ─── */
+  .poster-header {
+    background: var(--teal);
+    padding: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .logos-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 28px;
+    background: var(--cream);
+    border-bottom: 4px solid var(--teal);
+  }
+
+  .logo-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .logo-placeholder input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+  }
+
+  .logo-box {
+    width: 110px; height: 54px;
+    border: 2px dashed var(--teal);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: var(--teal);
+    font-weight: 700;
+    letter-spacing: .5px;
+    overflow: hidden;
+    background: rgba(0,107,101,.04);
+    transition: background .2s;
+  }
+
+  .logo-box:hover { background: rgba(0,107,101,.1); }
+  .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+
+  /* ─── Body ─── */
+  .poster-body {
+    padding: 28px 38px 0;
+  }
+
+  /* workshop title */
+  .workshop-title {
+    font-family: 'Merriweather', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--teal);
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .by-line {
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 4px;
+  }
+
+  .organiser-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: .5px;
+    margin-bottom: 24px;
+  }
+
+  /* title + image row */
+  .title-image-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .title-block { flex: 1; }
+
+  /* circular image */
+  .chip-image-wrap {
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .chip-image-wrap input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .chip-image {
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 5px solid var(--teal);
+    object-fit: cover;
+    display: block;
+    background: #ccc;
+  }
+
+  .chip-image-placeholder {
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 5px dashed var(--teal);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(0,107,101,.05);
+    gap: 6px;
+  }
+
+  .chip-image-placeholder span { font-size: 28px; }
+
+  /* ─── Divider ─── */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal) 0%, transparent 100%);
+    margin: 22px 0 18px;
+    border-radius: 1px;
+  }
+
+  /* ─── Team section ─── */
+  .section-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 12px;
+    letter-spacing: .3px;
+  }
+
+  .team-list { list-style: none; margin-bottom: 6px; }
+
+  .team-member {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .member-num {
+    width: 24px; height: 24px;
+    background: var(--teal);
+    color: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .member-info {
+    font-size: 15.5px;
+    font-weight: 700;
+    color: #222;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: baseline;
+  }
+
+  .member-role {
+    font-weight: 600;
+    color: #555;
+    font-size: 14.5px;
+  }
+
+  /* add/remove buttons */
+  .add-btn, .remove-btn {
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 3px 9px;
+    transition: opacity .2s;
+  }
+
+  .add-btn { background: var(--teal); color: #fff; margin-top: 6px; }
+  .remove-btn { background: #e53e3e; color: #fff; margin-left: 6px; align-self: center; }
+  .add-btn:hover, .remove-btn:hover { opacity: .8; }
+
+  /* ─── Date / Time / Venue ─── */
+  .logistics-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 30px;
+    margin: 20px 0 18px;
+    background: rgba(0,107,101,.06);
+    border-left: 5px solid var(--teal);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .logistics-item label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .logistics-item .value {
+    font-size: 20px;
+    font-weight: 900;
+    color: #1a1a1a;
+    font-family: 'Merriweather', serif;
+  }
+
+  /* ─── Coordinators strip ─── */
+  .coords-strip {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    padding: 18px 0 20px;
+    border-top: 2px solid rgba(0,107,101,.2);
+  }
+
+  .coord-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .coord-role {
+    display: block;
+    width: 100%;
+    font-size: 13px;
+    color: var(--teal);
+    font-weight: 700;
+    letter-spacing: .5px;
+    margin-bottom: 8px;
+    border-bottom: 2px solid var(--teal);
+    padding-bottom: 4px;
+    text-transform: uppercase;
+  }
+
+  .coord-name {
+    display: block;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 3px;
+  }
+
+  .coord-designation {
+    display: block;
+    font-size: 12.5px;
+    color: #555;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  /* ─── Footer ─── */
+  .poster-footer {
+    background: var(--teal);
+    color: #fff;
+    text-align: center;
+    padding: 18px 28px;
+    line-height: 1.65;
+  }
+
+  .footer-line {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: .3px;
+  }
+
+  .footer-line.bold {
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: .6px;
+  }
+
+  /* ─── Editable styles ─── */
+  [contenteditable="true"] {
+    outline: none;
+    border-radius: 3px;
+    transition: background .15s, box-shadow .15s;
+    cursor: text;
+    min-width: 20px;
+    display: inline-block;
+  }
+
+  [contenteditable="true"]:hover {
+    background: rgba(0,107,101,.08);
+    box-shadow: 0 0 0 2px rgba(0,107,101,.2);
+  }
+
+  [contenteditable="true"]:focus {
+    background: rgba(255,255,255,.9);
+    box-shadow: 0 0 0 2px var(--teal);
+  }
+
+  /* print */
+  @media print {
+    body { background: none; padding: 0; }
+    .toolbar, .add-btn, .remove-btn { display: none !important; }
+    .poster { box-shadow: none; width: 100%; }
+    [contenteditable="true"]:hover,
+    [contenteditable="true"]:focus { background: transparent; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── Toolbar ─── -->
+<div class="toolbar">
+  <label>BG Color</label>
+  <input type="color" id="bgColor" value="#f4e6c9" title="Poster background">
+
+  <label>Teal Color</label>
+  <input type="color" id="tealColor" value="#006b65" title="Header / accents">
+
+  <label>Body Text</label>
+  <input type="color" id="bodyColor" value="#1a1a1a" title="Body text color">
+
+  <div class="sep"></div>
+  <label>Footer BG</label>
+  <input type="color" id="footerBg" value="#006b65" title="Footer background">
+
+  <label>Footer Text</label>
+  <input type="color" id="footerText" value="#ffffff" title="Footer text color">
+
+  <span class="tip">✏️ Click any text to edit &nbsp;|&nbsp; 🖨️ Ctrl+P to print</span>
+</div>
+
+<!-- ─── Poster ─── -->
+<div class="poster" id="poster">
+
+  <!-- Logos row -->
+  <div class="logos-row">
+    <div class="logo-placeholder" title="Click to upload left logo">
+      <div class="logo-box" id="leftLogoBox">
+        <span>GITAM LOGO</span>
+        <img id="leftLogoImg" src="" alt="" style="display:none">
+      </div>
+      <input type="file" accept="image/*" onchange="uploadLogo(this,'leftLogoImg','leftLogoBox')">
+    </div>
+
+    <div class="logo-placeholder" title="Click to upload right logo">
+      <div class="logo-box" id="rightLogoBox">
+        <span>PARTNER LOGO</span>
+        <img id="rightLogoImg" src="" alt="" style="display:none">
+      </div>
+      <input type="file" accept="image/*" onchange="uploadLogo(this,'rightLogoImg','rightLogoBox')">
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="poster-body">
+    <div class="title-image-row">
+      <div class="title-block">
+        <h1 class="workshop-title" contenteditable="true">IoT CoE<br>Hands-on Workshop</h1>
+        <p class="by-line" contenteditable="true">by</p>
+        <p class="organiser-name" contenteditable="true">SILICON LABS</p>
+      </div>
+
+      <!-- Circular chip image -->
+      <div class="chip-image-wrap" title="Click to upload image">
+        <div class="chip-image-placeholder" id="chipPlaceholder">
+          <span>📷</span>
+          Click to upload<br>circuit image
+        </div>
+        <img id="chipImg" class="chip-image" src="" alt="Circuit" style="display:none">
+        <input type="file" accept="image/*" onchange="uploadChip(this)">
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Training team -->
+    <p class="section-title" contenteditable="true">Training Team Members</p>
+    <ul class="team-list" id="teamList">
+      <li class="team-member" data-id="1">
+        <div class="member-num">1</div>
+        <div class="member-info">
+          <span contenteditable="true">Venkatesh Narasimhan</span><span class="member-role">, <span contenteditable="true">R&amp;D Training Lead, APAC</span></span>
+          <button class="remove-btn" onclick="removeMember(this)">✕</button>
+        </div>
+      </li>
+      <li class="team-member" data-id="2">
+        <div class="member-num">2</div>
+        <div class="member-info">
+          <span contenteditable="true">Manjusha Maddala</span><span class="member-role">, <span contenteditable="true">Senior Engineer – SW Design</span></span>
+          <button class="remove-btn" onclick="removeMember(this)">✕</button>
+        </div>
+      </li>
+      <li class="team-member" data-id="3">
+        <div class="member-num">3</div>
+        <div class="member-info">
+          <span contenteditable="true">Yamini Sri Kolluru</span><span class="member-role">, <span contenteditable="true">Engineer I – Product &amp; System Apps</span></span>
+          <button class="remove-btn" onclick="removeMember(this)">✕</button>
+        </div>
+      </li>
+    </ul>
+    <button class="add-btn" onclick="addMember()">+ Add Member</button>
+
+    <!-- Logistics -->
+    <div class="logistics-row">
+      <div class="logistics-item">
+        <label>Date</label>
+        <div class="value" contenteditable="true">20th Feb 2026</div>
+      </div>
+      <div class="logistics-item">
+        <label>Venue</label>
+        <div class="value" contenteditable="true">Room No. ICT 520</div>
+      </div>
+      <div class="logistics-item">
+        <label>Time</label>
+        <div class="value" contenteditable="true">1:30 to 5:30 PM</div>
+      </div>
+      <div class="logistics-item">
+        <label>Additional Info</label>
+        <div class="value" contenteditable="true" style="font-size:15px">Open to all EECE students</div>
+      </div>
+    </div>
+
+    <!-- Coordinators -->
+    <div class="coords-strip" id="coordsStrip">
+      <div class="coord-group">
+        <div class="coord-role" contenteditable="true">Coordinators</div>
+        <div class="coord-name" contenteditable="true">Dr. M. Grace Mercy</div>
+        <div class="coord-name" contenteditable="true">Mr. V. Nooka Raju</div>
+      </div>
+      <div class="coord-group">
+        <div class="coord-role" contenteditable="true">Convener</div>
+        <div class="coord-name" contenteditable="true">Dr. A. Ch. Sudhir</div>
+        <div class="coord-designation" contenteditable="true">HoD, Dept of EECE</div>
+      </div>
+      <div class="coord-group">
+        <div class="coord-role" contenteditable="true">Co-Convener</div>
+        <div class="coord-name" contenteditable="true">Dr. S. Neeraja</div>
+        <div class="coord-designation" contenteditable="true">Dy. HoD, Dept of EECE</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="poster-footer" id="posterFooter">
+    <div class="footer-line" contenteditable="true">Department of Electrical, Electronics and Communication Engg.</div>
+    <div class="footer-line bold" contenteditable="true">GITAM School of Core Engineering</div>
+    <div class="footer-line bold" contenteditable="true">GITAM (Deemed to be University), Visakhapatnam</div>
+  </div>
+</div>
+
+<script>
+  /* ─── Colour toolbar ─── */
+  const root = document.documentElement;
+
+  document.getElementById('bgColor').addEventListener('input', e => {
+    root.style.setProperty('--cream', e.target.value);
+  });
+
+  document.getElementById('tealColor').addEventListener('input', e => {
+    root.style.setProperty('--teal', e.target.value);
+    root.style.setProperty('--teal-light', e.target.value);
+  });
+
+  document.getElementById('bodyColor').addEventListener('input', e => {
+    root.style.setProperty('--dark', e.target.value);
+    document.querySelectorAll('.member-info, .logistics-row .value, .coord-name').forEach(el => {
+      el.style.color = e.target.value;
+    });
+  });
+
+  document.getElementById('footerBg').addEventListener('input', e => {
+    document.getElementById('posterFooter').style.background = e.target.value;
+  });
+
+  document.getElementById('footerText').addEventListener('input', e => {
+    document.getElementById('posterFooter').style.color = e.target.value;
+  });
+
+  /* ─── Logo upload ─── */
+  function uploadLogo(input, imgId, boxId) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.getElementById(imgId);
+      const box = document.getElementById(boxId);
+      img.src = e.target.result;
+      img.style.display = 'block';
+      box.querySelector('span') && (box.querySelector('span').style.display = 'none');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ─── Chip image upload ─── */
+  function uploadChip(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('chipImg').src = e.target.result;
+      document.getElementById('chipImg').style.display = 'block';
+      document.getElementById('chipPlaceholder').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  /* ─── Team members ─── */
+  function renumberMembers() {
+    document.querySelectorAll('.team-member').forEach((li, i) => {
+      li.querySelector('.member-num').textContent = i + 1;
+    });
+  }
+
+  function addMember() {
+    const list = document.getElementById('teamList');
+    const count = list.children.length + 1;
+    const li = document.createElement('li');
+    li.className = 'team-member';
+    li.innerHTML = `
+      <div class="member-num">${count}</div>
+      <div class="member-info">
+        <span contenteditable="true">New Speaker Name</span>
+        <span class="member-role">, <span contenteditable="true">Role / Designation</span></span>
+        <button class="remove-btn" onclick="removeMember(this)">✕</button>
+      </div>`;
+    list.appendChild(li);
+  }
+
+  function removeMember(btn) {
+    btn.closest('.team-member').remove();
+    renumberMembers();
+  }
+</script>
+</body>
+</html>
