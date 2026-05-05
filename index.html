@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poster Form Builder</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',sans-serif;background:#e8e0d5;min-height:100vh;padding:24px}
+h1{font-size:18px;font-weight:700;color:#006b65;margin-bottom:16px;letter-spacing:.3px}
+.wrap{display:grid;grid-template-columns:360px 1fr;gap:20px;max-width:1200px;margin:0 auto}
+
+/* ── Form Panel ── */
+.form-panel{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);overflow:hidden;align-self:start;position:sticky;top:24px;max-height:calc(100vh - 48px);overflow-y:auto}
+.form-head{padding:14px 18px;background:#006b65;color:#fff;font-size:14px;font-weight:700;letter-spacing:.3px}
+.form-head span{font-weight:400;opacity:.75;font-size:12px}
+.section{padding:14px 18px;border-bottom:1px solid #f0ede8}
+.section-label{font-size:10px;font-weight:700;color:#006b65;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.field{margin-bottom:10px}
+.field label{display:block;font-size:12px;color:#666;margin-bottom:3px;font-weight:600}
+.field input,.field textarea,.field select{width:100%;font-size:13px;padding:7px 10px;background:#fafaf9;border:1px solid #e0ddd8;border-radius:6px;color:#1a1a1a;font-family:'Source Sans 3',sans-serif;transition:border-color .15s}
+.field input:focus,.field textarea:focus{outline:none;border-color:#006b65;background:#fff}
+.field textarea{resize:vertical;min-height:58px}
+.member-row{display:flex;gap:6px;margin-bottom:7px;align-items:center}
+.member-row input{flex:1;font-size:12px;padding:6px 8px;background:#fafaf9;border:1px solid #e0ddd8;border-radius:6px;color:#1a1a1a;font-family:'Source Sans 3',sans-serif}
+.member-row input:focus{outline:none;border-color:#006b65}
+.btn-rm{width:24px;height:24px;border:none;border-radius:50%;background:#fee2e2;color:#dc2626;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.btn-rm:hover{background:#fca5a5}
+.btn-add{display:block;width:100%;margin-top:6px;font-size:12px;padding:7px 0;border:1.5px dashed #006b65;border-radius:6px;background:transparent;color:#006b65;cursor:pointer;text-align:center;font-weight:600;transition:background .15s}
+.btn-add:hover{background:#f0faf9}
+.coord-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.coord-block label{display:block;font-size:10px;color:#888;margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.coord-block input{width:100%;font-size:12px;padding:5px 7px;background:#fafaf9;border:1px solid #e0ddd8;border-radius:5px;color:#1a1a1a;margin-bottom:5px;font-family:'Source Sans 3',sans-serif}
+.coord-block input:focus{outline:none;border-color:#006b65}
+.color-row{display:flex;gap:12px;flex-wrap:wrap}
+.color-item{display:flex;align-items:center;gap:6px;font-size:12px;color:#555;font-weight:600}
+.color-item input[type=color]{width:30px;height:26px;border:1px solid #e0ddd8;border-radius:5px;padding:2px;cursor:pointer;background:none}
+.btn-export{display:block;width:100%;padding:10px 0;background:#006b65;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:background .15s}
+.btn-export:hover{background:#005550}
+.btn-print{display:block;width:100%;padding:8px 0;background:transparent;color:#006b65;border:1.5px solid #006b65;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px}
+.btn-print:hover{background:#f0faf9}
+
+/* ── Poster Preview ── */
+.preview-panel{background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.1);overflow:hidden}
+.preview-label{padding:10px 20px;background:#f5f2ee;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;border-bottom:1px solid #ebe7e0}
+
+.poster{width:100%;font-family:'Georgia',serif;background:#f4e6c9;min-height:600px}
+
+.p-header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#f4e6c9;border-bottom:4px solid #006b65;gap:14px}
+.p-logo{width:100px;height:50px;border:2px dashed #006b65;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#006b65;font-weight:700;overflow:hidden;cursor:pointer;position:relative;flex-shrink:0;background:rgba(0,107,101,.04)}
+.p-logo input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.p-logo img{width:100%;height:100%;object-fit:contain}
+.p-header-mid{flex:1;text-align:center}
+.p-dept{font-size:11px;font-weight:700;color:#006b65;font-family:'Source Sans 3',sans-serif;letter-spacing:.2px}
+.p-school{font-size:13px;font-weight:800;color:#006b65;font-family:'Source Sans 3',sans-serif}
+
+.p-body{padding:20px 28px 0}
+.p-title-row{display:flex;align-items:flex-start;gap:20px}
+.p-title-block{flex:1}
+.p-title{font-size:34px;font-weight:900;color:#006b65;line-height:1.1;margin-bottom:6px;font-family:'Merriweather',serif}
+.p-byline{font-size:12px;color:#666;font-family:'Source Sans 3',sans-serif;margin-bottom:2px}
+.p-org{font-size:18px;font-weight:700;color:#006b65;font-family:'Source Sans 3',sans-serif;margin-bottom:14px;letter-spacing:.3px}
+.p-img-circle{width:150px;height:150px;border-radius:50%;border:4px solid #006b65;flex-shrink:0;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:#006b65;font-weight:700;text-align:center;position:relative;background:rgba(0,107,101,.06)}
+.p-img-circle input{position:absolute;inset:0;opacity:0;cursor:pointer;border-radius:50%}
+.p-img-circle img{width:100%;height:100%;object-fit:cover}
+
+.p-divider{height:2px;background:linear-gradient(90deg,#006b65 0%,transparent 100%);margin:14px 0 10px;border-radius:1px}
+.p-section-title{font-size:15px;font-weight:700;color:#006b65;margin-bottom:8px;font-family:'Source Sans 3',sans-serif}
+.p-member{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;font-family:'Source Sans 3',sans-serif}
+.p-num{width:20px;height:20px;background:#006b65;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.p-mname{font-size:13px;font-weight:700;color:#1a1a1a}
+.p-mrole{font-size:13px;color:#555}
+
+.p-logistics{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:14px 0;background:rgba(0,107,101,.07);border-left:5px solid #006b65;padding:12px 16px;border-radius:0 8px 8px 0;font-family:'Source Sans 3',sans-serif}
+.p-logistics-item label{display:block;font-size:9px;font-weight:700;color:#006b65;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.p-logistics-item .pv{font-size:16px;font-weight:900;color:#1a1a1a;font-family:'Merriweather',serif}
+
+.p-coords{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 0 16px;border-top:2px solid rgba(0,107,101,.2);font-family:'Source Sans 3',sans-serif}
+.p-coord-role{font-size:11px;font-weight:700;color:#006b65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #006b65;padding-bottom:3px;margin-bottom:5px}
+.p-coord-name{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:2px}
+.p-coord-desig{font-size:11px;color:#555}
+
+.p-footer{background:#006b65;color:#fff;text-align:center;padding:14px 24px;font-family:'Source Sans 3',sans-serif}
+.p-footer div{font-size:12px;font-weight:600;line-height:1.7}
+.p-footer div.bold{font-size:13px;font-weight:800}
+
+@media print{
+  body{background:none;padding:0}
+  .form-panel,.preview-label{display:none}
+  .wrap{display:block}
+  .preview-panel{box-shadow:none;border-radius:0}
+  .poster{min-height:unset}
+}
+</style>
+</head>
+<body>
+
+<h1>🎓 Poster Form Builder</h1>
+
+<div class="wrap">
+
+  <!-- ── FORM PANEL ── -->
+  <div class="form-panel">
+    <div class="form-head">Fill in details <span>→ poster updates live</span></div>
+
+    <div class="section">
+      <div class="section-label">Institution</div>
+      <div class="field"><label>Department name</label><input id="f-dept" placeholder="Dept. of Electrical, Electronics & Communication Engg." oninput="update()"></div>
+      <div class="field"><label>School / Faculty</label><input id="f-school" placeholder="School of Core Engineering" oninput="update()"></div>
+      <div class="field"><label>University / Institution & location</label><input id="f-inst" placeholder="University Name, City" oninput="update()"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Event</div>
+      <div class="field"><label>Event / Workshop title</label><textarea id="f-title" rows="2" placeholder="IoT CoE Hands-on Workshop" oninput="update()"></textarea></div>
+      <div class="field"><label>Organised by (label)</label><input id="f-byline" placeholder="Organised by" oninput="update()"></div>
+      <div class="field"><label>Organiser / Sponsor name</label><input id="f-org" placeholder="Silicon Labs" oninput="update()"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Logistics</div>
+      <div class="field"><label>Date</label><input id="f-date" placeholder="20th Feb 2026" oninput="update()"></div>
+      <div class="field"><label>Time</label><input id="f-time" placeholder="1:30 PM – 5:30 PM" oninput="update()"></div>
+      <div class="field"><label>Venue / Room</label><input id="f-venue" placeholder="Room No. ICT 520" oninput="update()"></div>
+      <div class="field"><label>Additional info (optional)</label><input id="f-extra" placeholder="Open to all EECE students" oninput="update()"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Resource Persons / Speakers</div>
+      <div id="members-form"></div>
+      <button class="btn-add" onclick="addMember()">+ Add Speaker</button>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Coordinators</div>
+      <div class="coord-grid">
+        <div class="coord-block">
+          <label>Role Title</label><input id="c1-role" value="Coordinators" oninput="update()">
+          <label>Name 1</label><input id="c1-n1" placeholder="Dr. A. Name" oninput="update()">
+          <label>Name 2</label><input id="c1-n2" placeholder="Mr. B. Name" oninput="update()">
+          <label>Designation</label><input id="c1-d" placeholder="" oninput="update()">
+        </div>
+        <div class="coord-block">
+          <label>Role Title</label><input id="c2-role" value="Convener" oninput="update()">
+          <label>Name</label><input id="c2-n1" placeholder="Dr. C. Name" oninput="update()">
+          <label>Designation</label><input id="c2-d" placeholder="HoD, Dept of EECE" oninput="update()">
+        </div>
+        <div class="coord-block">
+          <label>Role Title</label><input id="c3-role" value="Co-Convener" oninput="update()">
+          <label>Name</label><input id="c3-n1" placeholder="Dr. D. Name" oninput="update()">
+          <label>Designation</label><input id="c3-d" placeholder="Dy. HoD, Dept of EECE" oninput="update()">
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Colors</div>
+      <div class="color-row">
+        <div class="color-item"><input type="color" id="c-bg" value="#f4e6c9" oninput="applyColors()"> Background</div>
+        <div class="color-item"><input type="color" id="c-teal" value="#006b65" oninput="applyColors()"> Accent</div>
+        <div class="color-item"><input type="color" id="c-footer" value="#006b65" oninput="applyColors()"> Footer</div>
+        <div class="color-item"><input type="color" id="c-text" value="#1a1a1a" oninput="applyColors()"> Body text</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">Export</div>
+      <button class="btn-export" onclick="exportPoster()">⬇ Download Poster as HTML</button>
+      <button class="btn-print" onclick="window.print()">🖨 Print Poster</button>
+    </div>
+  </div>
+
+  <!-- ── POSTER PREVIEW ── -->
+  <div class="preview-panel">
+    <div class="preview-label">Live Preview — updates as you type</div>
+
+    <div class="poster" id="poster">
+
+      <div class="p-header" id="p-header">
+        <div class="p-logo" title="Click to upload institution logo">
+          <span id="logoLabel">LOGO</span>
+          <img id="logoImg" src="" alt="" style="display:none">
+          <input type="file" accept="image/*" onchange="uploadLogo(this)">
+        </div>
+        <div class="p-header-mid">
+          <div class="p-dept" id="p-dept">Department Name</div>
+          <div class="p-school" id="p-school">School / Institution</div>
+        </div>
+      </div>
+
+      <div class="p-body">
+        <div class="p-title-row">
+          <div class="p-title-block">
+            <div class="p-title" id="p-title">Event / Workshop Title</div>
+            <div class="p-byline" id="p-byline">Organised by</div>
+            <div class="p-org" id="p-org">Organiser Name</div>
+          </div>
+          <div class="p-img-circle" title="Click to upload image">
+            <span id="chipLabel">📷<br>Upload<br>Image</span>
+            <img id="chipImg" src="" alt="" style="display:none">
+            <input type="file" accept="image/*" onchange="uploadChip(this)">
+          </div>
+        </div>
+
+        <div class="p-divider"></div>
+        <div class="p-section-title">Resource Persons / Speakers</div>
+        <div id="p-members"></div>
+
+        <div class="p-logistics" id="p-logistics">
+          <div class="p-logistics-item"><label>Date</label><div class="pv" id="p-date">—</div></div>
+          <div class="p-logistics-item"><label>Venue</label><div class="pv" id="p-venue">—</div></div>
+          <div class="p-logistics-item"><label>Time</label><div class="pv" id="p-time">—</div></div>
+          <div class="p-logistics-item" id="p-extra-wrap"><label>Info</label><div class="pv" id="p-extra">—</div></div>
+        </div>
+
+        <div class="p-coords">
+          <div>
+            <div class="p-coord-role" id="pr-c1">Coordinators</div>
+            <div class="p-coord-name" id="pn-c1-1"></div>
+            <div class="p-coord-name" id="pn-c1-2"></div>
+            <div class="p-coord-desig" id="pd-c1"></div>
+          </div>
+          <div>
+            <div class="p-coord-role" id="pr-c2">Convener</div>
+            <div class="p-coord-name" id="pn-c2"></div>
+            <div class="p-coord-desig" id="pd-c2"></div>
+          </div>
+          <div>
+            <div class="p-coord-role" id="pr-c3">Co-Convener</div>
+            <div class="p-coord-name" id="pn-c3"></div>
+            <div class="p-coord-desig" id="pd-c3"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-footer" id="p-footer">
+        <div id="f-footer-dept"></div>
+        <div id="f-footer-school" class="bold"></div>
+        <div id="f-footer-inst" class="bold"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let members = [{name:'Speaker Name', role:'Role / Designation'}];
+
+function g(id){return document.getElementById(id)}
+function v(id){const el=g(id);return el?el.value.trim():''}
+
+function renderMembersForm(){
+  const c=g('members-form'); c.innerHTML='';
+  members.forEach((m,i)=>{
+    const d=document.createElement('div'); d.className='member-row';
+    d.innerHTML=`<input placeholder="Full name" value="${escHtml(m.name)}" oninput="members[${i}].name=this.value;update()">
+<input placeholder="Role / designation" value="${escHtml(m.role)}" oninput="members[${i}].role=this.value;update()">
+<button class="btn-rm" onclick="removeMember(${i})" title="Remove">✕</button>`;
+    c.appendChild(d);
+  });
+}
+
+function escHtml(s){return(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+
+function addMember(){members.push({name:'',role:''});renderMembersForm();update()}
+function removeMember(i){if(members.length>1){members.splice(i,1);renderMembersForm();update()}}
+
+function update(){
+  g('p-dept').textContent  = v('f-dept')   || 'Department Name';
+  g('p-school').textContent= (v('f-school')||'School Name') + (v('f-inst') ? ' — ' + v('f-inst') : '');
+  g('p-title').textContent = v('f-title')  || 'Event / Workshop Title';
+  g('p-byline').textContent= v('f-byline') || 'Organised by';
+  g('p-org').textContent   = v('f-org')    || 'Organiser Name';
+  g('p-date').textContent  = v('f-date')   || '—';
+  g('p-time').textContent  = v('f-time')   || '—';
+  g('p-venue').textContent = v('f-venue')  || '—';
+  const ex=v('f-extra');
+  g('p-extra').textContent = ex || '—';
+  g('p-extra-wrap').style.display = ex ? '' : 'none';
+
+  const pm=g('p-members'); pm.innerHTML='';
+  members.forEach((m,i)=>{
+    if(!m.name && !m.role) return;
+    const d=document.createElement('div'); d.className='p-member';
+    d.innerHTML=`<div class="p-num">${i+1}</div><div class="p-mname">${escHtml(m.name)||'—'}</div><div class="p-mrole">${m.role?', '+escHtml(m.role):''}</div>`;
+    pm.appendChild(d);
+  });
+
+  g('pr-c1').textContent = v('c1-role') || 'Coordinators';
+  g('pn-c1-1').textContent = v('c1-n1');
+  g('pn-c1-2').textContent = v('c1-n2');
+  g('pd-c1').textContent   = v('c1-d');
+  g('pr-c2').textContent   = v('c2-role') || 'Convener';
+  g('pn-c2').textContent   = v('c2-n1');
+  g('pd-c2').textContent   = v('c2-d');
+  g('pr-c3').textContent   = v('c3-role') || 'Co-Convener';
+  g('pn-c3').textContent   = v('c3-n1');
+  g('pd-c3').textContent   = v('c3-d');
+
+  g('f-footer-dept').textContent   = v('f-dept');
+  g('f-footer-school').textContent = v('f-school');
+  g('f-footer-inst').textContent   = v('f-inst');
+}
+
+function applyColors(){
+  const bg=g('c-bg').value, ac=g('c-teal').value, ft=g('c-footer').value, tx=g('c-text').value;
+  const poster=g('poster');
+  poster.style.background=bg;
+  g('p-header').style.background=bg;
+  g('p-header').style.borderBottomColor=ac;
+  g('p-footer').style.background=ft;
+  document.querySelectorAll('.p-dept,.p-school,.p-org,.p-section-title,.p-coord-role,.p-logistics-item label').forEach(el=>el.style.color=ac);
+  document.querySelectorAll('.p-title').forEach(el=>el.style.color=ac);
+  document.querySelectorAll('.p-num').forEach(el=>{el.style.background=ac;el.style.color='#fff'});
+  document.querySelectorAll('.p-divider').forEach(el=>el.style.background=`linear-gradient(90deg,${ac},transparent)`);
+  document.querySelectorAll('.p-coord-role').forEach(el=>el.style.borderBottomColor=ac);
+  document.querySelectorAll('.p-logistics').forEach(el=>{el.style.borderLeftColor=ac;el.style.background=ac+'18'});
+  document.querySelectorAll('.p-logo').forEach(el=>{el.style.borderColor=ac;el.style.color=ac});
+  document.querySelectorAll('.p-img-circle').forEach(el=>{el.style.borderColor=ac;el.style.color=ac});
+  document.querySelectorAll('.p-mname,.pv,.p-coord-name').forEach(el=>el.style.color=tx);
+}
+
+function uploadLogo(input){
+  const file=input.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{g('logoImg').src=e.target.result;g('logoImg').style.display='block';g('logoLabel').style.display='none'};
+  r.readAsDataURL(file);
+}
+
+function uploadChip(input){
+  const file=input.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=e=>{g('chipImg').src=e.target.result;g('chipImg').style.display='block';g('chipLabel').style.display='none'};
+  r.readAsDataURL(file);
+}
+
+function exportPoster(){
+  const posterHtml=g('poster').outerHTML;
+  const html=`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Workshop Poster</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700;900&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Source Sans 3',sans-serif;background:#e8e0d5;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:30px}
+.poster{width:860px;max-width:100%;font-family:'Georgia',serif;background:#f4e6c9;box-shadow:0 8px 40px rgba(0,0,0,.2)}
+.p-header{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;background:#f4e6c9;border-bottom:4px solid #006b65;gap:14px}
+.p-logo{width:100px;height:50px;border:2px dashed #006b65;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:9px;color:#006b65;font-weight:700;overflow:hidden;background:rgba(0,107,101,.04)}
+.p-logo img{width:100%;height:100%;object-fit:contain}
+.p-header-mid{flex:1;text-align:center}
+.p-dept{font-size:11px;font-weight:700;color:#006b65;font-family:'Source Sans 3',sans-serif}
+.p-school{font-size:13px;font-weight:800;color:#006b65;font-family:'Source Sans 3',sans-serif}
+.p-body{padding:20px 28px 0}
+.p-title-row{display:flex;align-items:flex-start;gap:20px}
+.p-title-block{flex:1}
+.p-title{font-size:34px;font-weight:900;color:#006b65;line-height:1.1;margin-bottom:6px;font-family:'Merriweather',serif}
+.p-byline{font-size:12px;color:#666;font-family:'Source Sans 3',sans-serif;margin-bottom:2px}
+.p-org{font-size:18px;font-weight:700;color:#006b65;font-family:'Source Sans 3',sans-serif;margin-bottom:14px}
+.p-img-circle{width:150px;height:150px;border-radius:50%;border:4px solid #006b65;flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:10px;color:#006b65;font-weight:700;text-align:center;background:rgba(0,107,101,.06)}
+.p-img-circle img{width:100%;height:100%;object-fit:cover}
+.p-divider{height:2px;background:linear-gradient(90deg,#006b65 0%,transparent 100%);margin:14px 0 10px;border-radius:1px}
+.p-section-title{font-size:15px;font-weight:700;color:#006b65;margin-bottom:8px;font-family:'Source Sans 3',sans-serif}
+.p-member{display:flex;align-items:baseline;gap:8px;margin-bottom:6px;font-family:'Source Sans 3',sans-serif}
+.p-num{width:20px;height:20px;background:#006b65;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.p-mname{font-size:13px;font-weight:700;color:#1a1a1a}
+.p-mrole{font-size:13px;color:#555}
+.p-logistics{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:14px 0;background:rgba(0,107,101,.07);border-left:5px solid #006b65;padding:12px 16px;border-radius:0 8px 8px 0;font-family:'Source Sans 3',sans-serif}
+.p-logistics-item label{display:block;font-size:9px;font-weight:700;color:#006b65;letter-spacing:1px;text-transform:uppercase;margin-bottom:2px}
+.p-logistics-item .pv{font-size:16px;font-weight:900;color:#1a1a1a;font-family:'Merriweather',serif}
+.p-coords{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:12px 0 16px;border-top:2px solid rgba(0,107,101,.2);font-family:'Source Sans 3',sans-serif}
+.p-coord-role{font-size:11px;font-weight:700;color:#006b65;text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #006b65;padding-bottom:3px;margin-bottom:5px}
+.p-coord-name{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:2px}
+.p-coord-desig{font-size:11px;color:#555}
+.p-footer{background:#006b65;color:#fff;text-align:center;padding:14px 24px;font-family:'Source Sans 3',sans-serif}
+.p-footer div{font-size:12px;font-weight:600;line-height:1.7}
+.p-footer div.bold{font-size:13px;font-weight:800}
+@media print{body{background:none;padding:0}.poster{box-shadow:none;width:100%}}
+</style>
+</head>
+<body>
+${posterHtml}
+</body>
+</html>`;
+  const a=document.createElement('a');
+  a.href='data:text/html;charset=utf-8,'+encodeURIComponent(html);
+  a.download='workshop_poster.html';
+  a.click();
+}
+
+renderMembersForm();
+update();
+</script>
+</body>
+</html>
